@@ -30,5 +30,8 @@ This is a simple Library Management System implemented in Java, using JDBC for d
 - JDBC
 - MySQL
 
-![image](https://github.com/kishore161003/Library_management/assets/116169099/fca147a2-2bdb-48e3-b50a-33a43a70019c)
+
+![Uploading Screenshot 2024-04-19 190513.png…]()
+
+
 
