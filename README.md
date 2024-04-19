@@ -4,6 +4,8 @@ This is a simple Library Management System implemented in Java, using JDBC for d
 
 ## Features
 
+### Authorization for admin and Members 
+
 ### For Admins
 - Add a new book to the library
 - Show available books
