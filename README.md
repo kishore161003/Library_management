@@ -17,6 +17,10 @@ This is a simple Library Management System implemented in Java, using JDBC for d
 - Show all books in the library
 - Borrow a book
 - Return a book
+- Search the Book
+  - search by Name
+  - Search by Author
+  - Search by genre
 - Show transactions for a member
 
 ## Technologies Used
