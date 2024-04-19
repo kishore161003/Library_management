@@ -3,9 +3,9 @@ package root.DataBases;
 import java.sql.*;
 
 public class Table {
-    static String url = ""; // use Your own db url
-    static String userName = "";// use Your own db userName
-    static String password = "";// use Your own db password
+    static String url = "jdbc:mysql://localhost:3306/db";
+    static String userName = "root";
+    static String password = "admin";
     static Connection connection = null;
     static Statement statement = null;
 
@@ -22,8 +22,7 @@ public class Table {
         connection = DriverManager.getConnection(url, userName, password);
         statement = connection.createStatement();
         statement.execute(
-                "CREATE TABLE Member(MemberId Int Primary Key Auto_increment, MemberName Varchar(50), MemberPhone Varchar(50), MemberEmail Varchar(50))");
-        connection.close();
+                "CREATE TABLE Member(MemberId Int Primary Key Auto_increment, MemberName Varchar(50), MemberPhone Varchar(50), MemberEmail Varchar(50), password Varchar(50))");
     }
 
     public static void createTransactionTable() throws Exception {
@@ -31,7 +30,6 @@ public class Table {
         statement = connection.createStatement();
         statement.execute(
                 "CREATE TABLE Transaction(TransactionId Int Primary Key Auto_increment, BookId Int, MemberId Int, BorrowDate VarChar(50), ReturnDate VarChar(50) DEFAULT NULL,status Enum('Borrowed','Returned'),Foreign Key(BookId) References Book(BookId),Foreign Key(MemberId) References Member(MemberId))");
-        connection.close();
 
     }
 
@@ -44,7 +42,6 @@ public class Table {
             createMemberTable();
             createTransactionTable();
         }
-        connection.close();
     }
 
 }

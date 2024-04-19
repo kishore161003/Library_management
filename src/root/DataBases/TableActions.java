@@ -4,9 +4,9 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class TableActions {
-    static String url = ""; //use Your own db url
-    static String userName = "";//use Your own db userName
-    static String password = "";//use Your own db password
+    static String url = "jdbc:mysql://localhost:3306/db";
+    static String userName = "root";
+    static String password = "admin";
     static Scanner scanner = new Scanner(System.in);
 
     public static void addBook() throws Exception {
@@ -52,7 +52,7 @@ public class TableActions {
         connection.close();
     }
 
-    public static void showAvailableBooks() throws Exception {
+    public static int showAvailableBooks() throws Exception {
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM Book WHERE Available = true");
@@ -60,17 +60,20 @@ public class TableActions {
         System.out.println(
                 "----------------------------------------------------------------------------------------------------------");
         System.out.println();
+        int c = 0;
         while (resultSet.next()) {
             System.out.println("\t" +
                     resultSet.getInt("BookId") + "\t\t" + resultSet.getString("BookName")
                     + "\t \t"
                     + resultSet.getString("Author") + "\t\t " + resultSet.getString("Genre")
                     + "\t\t" + resultSet.getInt("bookCount"));
+            c++;
         }
         System.out.println();
         System.out.println(
                 "------------------------------------------------------------------------------------------------------------");
         connection.close();
+        return c;
     }
 
     public static void showAllBooks() throws Exception {
@@ -111,73 +114,54 @@ public class TableActions {
         connection.close();
     }
 
-    public static int createMember() throws Exception {
+    public static int createMember(String memberName, String memberPhone, String memberEmail, String memberPassword)
+            throws Exception {
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter Member Name: ");
-        String memberName = sc.nextLine().trim();
-        System.out.print("Enter Member Phone: ");
-        String memberPhone = sc.nextLine().trim();
-        System.out.print("Enter Member Email: ");
-        String memberEmail = sc.nextLine().trim();
+        int n = 0;
+
         if (statement.executeUpdate(
-                "INSERT INTO Member(MemberName, MemberPhone, MemberEmail) VALUES ('" + memberName + "','"
-                        + memberPhone + "','" + memberEmail + "')") > 0) {
+                "INSERT INTO Member(MemberName, MemberPhone, MemberEmail,password) VALUES ('" + memberName + "','"
+                        + memberPhone + "','" + memberEmail + "','" + memberPassword + "')") > 0) {
             System.out.println("Member Added Successfully");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Member ORDER BY memberId DESC LIMIT 1");
+            if (resultSet.next()) {
+                int memberId = resultSet.getInt("MemberId");
+                System.out.println("Your Member Id is: " + memberId);
+                return memberId;
+            } else {
+                System.out.println("Failed to retrieve MemberId");
+            }
         } else {
             System.out.println("Member Not Added");
         }
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM Member ORDER BY memberId DESC LIMIT 1 ;");
-        resultSet.next();
-        System.out.println("Your Member Id is: " + resultSet.getInt("MemberId"));
         connection.close();
-        return resultSet.getInt("MemberId");
+        return n;
     }
 
-    public static void borrowBook() throws Exception {
+    public static void borrowBook(int memberId) throws Exception {
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
-        showAvailableBooks();
-        System.out.println();
-        System.out.println("1.Exising Member");
-        System.out.println("2.New Member");
-        System.out.print("Enter Choice: ");
-        int choice = Integer.parseInt(scanner.nextLine());
-        if (choice == 1) {
-            System.out.println("Enter Member Id: ");
-            int memberId = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter Book Id: ");
-            int bookId = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter Borrow Date: ");
-            String borrowDate = scanner.nextLine();
-            String query = "Insert into Transaction(BookId, MemberId, BorrowDate, Status) Values(" + bookId + ","
-                    + memberId + ",'" + borrowDate + "','Borrowed')";
-            if (statement.executeUpdate(query) > 0) {
-                statement.execute(
-                        "update book set Available = case when bookCount = 1 then false else true end, bookCount = bookCount - 1 where bookId = "
-                                + bookId);
-                System.out.println("Book Borrowed Successfully");
-            } else {
-                System.out.println("Book Not Borrowed");
-            }
-        } else if (choice == 2) {
-            int memberId = createMember();
-            System.out.print("Enter Book Id: ");
-            String bookId = scanner.nextLine();
-            System.out.println("Enter Borrow Date: ");
-            String borrowDate = scanner.nextLine();
-            String query = "Insert into Transaction(BookId, MemberId, BorrowDate, Status) Values(" + bookId + ","
-                    + memberId + ",'" + borrowDate + "','Borrowed')";
-            if (statement.executeUpdate(query) > 0) {
-                statement.execute(
-                        "update book set Available = case when bookCount = 1 then false else true end, bookCount = bookCount - 1 where bookId = "
-                                + bookId);
-                System.out.println("Book Borrowed Successfully");
-            } else {
-                System.out.println("Book Not Borrowed");
-            }
+        int c = showAvailableBooks();
+        if (c == 0) {
+            System.out.println("No Books Available");
+            return;
         }
+        System.out.print("Enter Book Id: ");
+        int bookId = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter Borrow Date: ");
+        String borrowDate = scanner.nextLine();
+        String query = "Insert into Transaction(BookId, MemberId, BorrowDate, Status) Values(" + bookId + ","
+                + memberId + ",'" + borrowDate + "','Borrowed')";
+        if (statement.executeUpdate(query) > 0) {
+            statement.execute(
+                    "update book set Available = case when bookCount = 1 then false else true end, bookCount = bookCount - 1 where bookId = "
+                            + bookId);
+            System.out.println("Book Borrowed Successfully");
+        } else {
+            System.out.println("Book Not Borrowed");
+        }
+
         connection.close();
     }
 
@@ -205,11 +189,9 @@ public class TableActions {
         return counter;
     }
 
-    public static void returnBook() throws Exception {
+    public static void returnBook(int memberId) throws Exception {
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
-        System.out.println("Enter Member Id: ");
-        int memberId = Integer.parseInt(scanner.nextLine());
         int n = showTransactions(memberId);
         if (n == 0) {
             System.out.println("\t\t\tThere is No Transactions");
@@ -351,5 +333,21 @@ public class TableActions {
         } else {
             System.out.println("Invalid Choice");
         }
+    }
+
+    public static int login(String email, String memberPassword) throws Exception {
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Member WHERE MemberEmail = '" + email + "'");
+        if (!resultSet.next()) {
+            System.out.println("Invalid Email");
+            return -1;
+        }
+        if (!resultSet.getString("password").equals(memberPassword)) {
+            System.out.println("Invalid Password");
+            return -1;
+        }
+        System.out.println("Login Successful");
+        return resultSet.getInt("MemberId");
     }
 }

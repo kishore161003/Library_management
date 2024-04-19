@@ -8,12 +8,40 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Table.createTables();
         Scanner sc = new Scanner(System.in);
-        int choice = 0;
-        System.out.println("Are you an admin or a member?  ");
-        System.out.println("1. Admin \n2. Member");
-        int userType = Integer.parseInt(sc.nextLine());
+        System.out.println("\t\t\t--------------------Welcome to Library Management System------------------");
+        System.out.println();
+        System.out.println("1.Create an account\n2.Login");
+        System.out.println();
+        System.out.print("Enter Your choice: ");
+        int ch = Integer.parseInt(sc.nextLine());
+        int id = 0;
+        if (ch == 1) {
+            System.out.println("Enter your name: ");
+            String name = sc.nextLine();
+            System.out.println("Enter your phone number: ");
+            String phone = sc.nextLine();
+            System.out.println("Enter your email: ");
+            String email = sc.nextLine();
+            System.out.println("Enter your password: ");
+            String password = sc.nextLine();
+            id = TableActions.createMember(name, phone, email, password);
+        } else if (ch == 2) {
+            System.out.println("Enter your email: ");
+            String email = sc.nextLine();
+            System.out.println("Enter your password: ");
+            String password = sc.nextLine();
+            id = TableActions.login(email, password);
+            if (id == -1) {
+                return;
+            }
+        } else {
+            System.out.println("Invalid choice");
+            return;
+        }
 
-        if (userType == 1) {
+        int choice = 0;
+
+        if (id == 1) {
             do {
                 System.out.println();
                 System.out.println("\t\t\t--------------------Welcome to Library Management System------------------");
@@ -23,7 +51,7 @@ public class Main {
                 System.out.println("3. Show All Books");
                 System.out.println("4. Show ALL Transactions");
                 System.out.println("5. Delete the Book");
-                System.out.println("6.show all members");
+                System.out.println("6. show all members");
                 System.out.println("7. Exit");
                 System.out.println();
                 System.out.print("Enter Your choice : ");
@@ -57,7 +85,7 @@ public class Main {
                         return;
                 }
             } while (choice < 7 && choice > 0);
-        } else if (userType == 2) {
+        } else {
             do {
                 System.out.println();
                 System.out.println("\t\t\t--------------------Welcome to Library Management System------------------");
@@ -81,15 +109,13 @@ public class Main {
                         TableActions.showAllBooks();
                         break;
                     case 3:
-                        TableActions.borrowBook();
+                        TableActions.borrowBook(id);
                         break;
                     case 4:
-                        TableActions.returnBook();
+                        TableActions.returnBook(id);
                         break;
                     case 5:
-                        System.out.print("Enter Member Id: ");
-                        int memberId = Integer.parseInt(sc.nextLine());
-                        TableActions.showTransactions(memberId);
+                        TableActions.showTransactions(id);
                         break;
                     case 6:
                         TableActions.Search();
@@ -103,8 +129,6 @@ public class Main {
                         return;
                 }
             } while (choice < 7 && choice > 0);
-        } else {
-            System.out.println("Invalid user type");
         }
     }
 }
