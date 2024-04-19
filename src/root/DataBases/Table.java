@@ -3,9 +3,9 @@ package root.DataBases;
 import java.sql.*;
 
 public class Table {
-    static String url = "jdbc:mysql://localhost:3306/db";
-    static String userName = "root";
-    static String password = "admin";
+    static String url = ""; //use Your own db url
+    static String userName = "";//use Your own db userName
+    static String password = "";//use Your own db password
     static Connection connection = null;
     static Statement statement = null;
 

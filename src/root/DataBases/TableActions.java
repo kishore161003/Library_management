@@ -4,9 +4,9 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class TableActions {
-    static String url = "jdbc:mysql://localhost:3306/db";
-    static String userName = "root";
-    static String password = "admin";
+    static String url = ""; //use Your own db url
+    static String userName = "";//use Your own db userName
+    static String password = "";//use Your own db password
     static Scanner scanner = new Scanner(System.in);
 
     public static void addBook() throws Exception {
