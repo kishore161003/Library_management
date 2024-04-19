@@ -260,4 +260,96 @@ public class TableActions {
                 "-------------------------------------------------------------------------------------------------------------");
         connection.close();
     }
+
+    public static void searchBookByName() throws Exception {
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        System.out.print("Enter Book Name: ");
+        String bookName = scanner.nextLine().trim();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Book WHERE BookName Like '%" + bookName + "%'");
+        System.out.println();
+
+        System.out.println("    Book Id \t\t Book Name \t\t Author \t\t Genre \t\t Book Count");
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        System.out.println();
+        while (resultSet.next()) {
+            System.out.println("\t" +
+                    resultSet.getInt("BookId") + "\t\t" + resultSet.getString("BookName")
+                    + "\t\t "
+                    + resultSet.getString("Author") + "\t\t " + resultSet.getString("Genre")
+                    + "\t\t" + resultSet.getInt("bookCount"));
+        }
+        System.out.println();
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        connection.close();
+    }
+
+    public static void searchBookByAuthor() throws Exception {
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        System.out.print("Enter Author Name: ");
+        String author = scanner.nextLine().trim();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Book WHERE Author LIKE '%" + author + "%'");
+        System.out.println();
+        System.out.println("    Book Id \t\t Book Name \t\t Author \t\t Genre \t\t Book Count");
+
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        System.out.println();
+        while (resultSet.next()) {
+            System.out.println("\t" +
+                    resultSet.getInt("BookId") + "\t\t" + resultSet.getString("BookName")
+                    + "\t\t "
+                    + resultSet.getString("Author") + "\t\t " + resultSet.getString("Genre")
+                    + "\t\t" + resultSet.getInt("bookCount"));
+        }
+        System.out.println();
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        connection.close();
+    }
+
+    public static void searchBookByGenre() throws Exception {
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        System.out.print("Enter Genre: ");
+        String genre = scanner.nextLine().trim();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Book WHERE Genre = '" + genre + "'");
+        System.out.println();
+        System.out.println("    Book Id \t\t Book Name \t\t Author \t\t Genre \t\t Book Count");
+
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        System.out.println();
+        while (resultSet.next()) {
+            System.out.println("\t" +
+                    resultSet.getInt("BookId") + "\t\t" + resultSet.getString("BookName")
+                    + "\t\t "
+                    + resultSet.getString("Author") + "\t\t " + resultSet.getString("Genre")
+                    + "\t\t" + resultSet.getInt("bookCount"));
+        }
+        System.out.println();
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------");
+        connection.close();
+    }
+
+    public static void Search() throws Exception {
+        System.out.println("1.Search by Book Name");
+        System.out.println("2.Search by Author Name");
+        System.out.println("3.Search by Genre");
+        System.out.println("Enter Your Choice: ");
+        int searchChoice = Integer.parseInt(scanner.nextLine());
+        if (searchChoice == 1) {
+            searchBookByName();
+        } else if (searchChoice == 2) {
+            searchBookByAuthor();
+        } else if (searchChoice == 3) {
+            searchBookByGenre();
+        } else {
+            System.out.println("Invalid Choice");
+        }
+    }
 }

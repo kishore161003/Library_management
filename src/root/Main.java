@@ -67,7 +67,8 @@ public class Main {
                 System.out.println("3. Borrow Book");
                 System.out.println("4. Return Book");
                 System.out.println("5. Show my Transactions");
-                System.out.println("6. Exit");
+                System.out.println("6. Search the Book");
+                System.out.println("7. Exit");
                 System.out.println();
                 System.out.print("Enter Your choice : ");
                 choice = Integer.parseInt(sc.nextLine());
@@ -87,10 +88,13 @@ public class Main {
                         break;
                     case 5:
                         System.out.print("Enter Member Id: ");
-                        int memberId = sc.nextInt();
+                        int memberId = Integer.parseInt(sc.nextLine());
                         TableActions.showTransactions(memberId);
                         break;
                     case 6:
+                        TableActions.Search();
+                        break;
+                    case 7:
                         System.out.println("Thank You for using Library Management System");
                         break;
                     default:
@@ -98,7 +102,7 @@ public class Main {
                         System.out.println("Exiting...");
                         return;
                 }
-            } while (choice < 6 && choice > 0);
+            } while (choice < 7 && choice > 0);
         } else {
             System.out.println("Invalid user type");
         }
